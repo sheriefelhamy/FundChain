@@ -1,0 +1,53 @@
+[profile.default]
+src = "src"
+test = "test"
+script = "script"
+out = "out"
+libs = ["lib"]
+
+remappings = [
+    "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+    "erc4626-tests/=lib/openzeppelin-contracts/lib/erc4626-tests/",
+    "forge-std/=lib/forge-std/src/",
+    "halmos-cheatcodes/=lib/openzeppelin-contracts/lib/halmos-cheatcodes/src/",
+    "openzeppelin-contracts/=lib/openzeppelin-contracts/",
+    "@hedera-smart-contracts/=lib/hedera-smart-contracts/"
+]
+
+auto_detect_remappings = true
+optimizer = true
+optimizer_runs = 200
+solc = "0.8.19"
+evm_version = "paris"
+via_ir = false
+
+# File system permissions
+[[profile.default.fs_permissions]]
+access = "read"
+path = "./"  # Enables reading files like `main-contract-address.txt`
+
+[[profile.default.fs_permissions]]
+access = "write"
+path = "./"  # Enables writing deployment logs, addresses, etc.
+
+[profile.broadcast]
+fs_permissions = [
+  { access = "read", path = "./" },
+  { access = "write", path = "./" }
+]
+
+# RPC Endpoints
+[rpc_endpoints]
+hedera_mainnet = "https://mainnet.hashio.io/api"
+hedera_testnet = "https://testnet.hashio.io/api"
+
+# Etherscan Verification (Hedera-compatible)
+[etherscan.hedera_mainnet]
+chain = 295
+url = "https://hashscan.io/mainnet"
+key = "${HEDERA_API_KEY}"
+
+[etherscan.hedera_testnet]
+chain = 296
+url = "https://hashscan.io/testnet"
+key = "${HEDERA_API_KEY}"
