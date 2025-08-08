@@ -39,7 +39,10 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const [hashconnect, setHashconnect] = useState<any>(null);
   const [topic, setTopic] = useState<string | null>(null);
 
-  const rpc = useMemo(() => new JsonRpcProvider(NETWORK_RPC[network]), [network]);
+  const rpc = useMemo(
+    () => new JsonRpcProvider(NETWORK_RPC[network]),
+    [network]
+  );
 
   useEffect(() => {
     // Initialize HashConnect lazily
@@ -50,9 +53,17 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const getEthersProvider = () => {
     try {
       if (!(hashconnect && topic && accountId)) return null;
-      const ProviderClass = (HashConnectLib as any).HashConnectProvider || (HashConnectLib as any).Provider || (hashconnect?.HashConnectProvider);
+      const ProviderClass =
+        (HashConnectLib as any).HashConnectProvider ||
+        (HashConnectLib as any).Provider ||
+        hashconnect?.HashConnectProvider;
       if (!ProviderClass) return null;
-      const eip1193Provider = new ProviderClass(hashconnect, network, topic, accountId);
+      const eip1193Provider = new ProviderClass(
+        hashconnect,
+        network,
+        topic,
+        accountId
+      );
       return new BrowserProvider(eip1193Provider as any);
     } catch (e) {
       return null;
@@ -75,9 +86,14 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       const appMetadata = {
         name: "FundChain",
         description: "FundChain Hedera dApp",
+        url: window.location.origin,
         icon: window.location.origin + "/favicon.ico",
       };
-      const initRes = await (hashconnect as any).init(appMetadata, network, false);
+      const initRes = await (hashconnect as any).init(
+        appMetadata,
+        network,
+        false
+      );
       const state = await (hashconnect as any).connect();
       setTopic(state?.topic);
       await (hashconnect as any).connectToLocalWallet();
@@ -92,7 +108,10 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
         toast({ title: "Wallet connected", description: acct || evm });
       });
     } catch (e: any) {
-      toast({ title: "Wallet connect failed", description: e?.message || String(e) });
+      toast({
+        title: "Wallet connect failed",
+        description: e?.message || String(e),
+      });
     } finally {
       setConnecting(false);
     }

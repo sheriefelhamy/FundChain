@@ -20,17 +20,28 @@ const Index = () => {
     setLoading(true);
     try {
       const pool = getReadPool();
-      const raw = await pool.getAllAsks();
-      const normalized: AskItem[] = (raw || []).map((r: any) => ({
-        id: BigInt(r.id ?? r[0] ?? 0n),
-        business: r.business ?? r[1] ?? "",
-        amount: BigInt(r.amount ?? r[2] ?? 0n),
-        funded: BigInt(r.funded ?? r[3] ?? 0n),
-        status: Number(r.status ?? r[4] ?? 0),
-      }));
+      const count = await pool.askCounter?.().catch(() => 0n);
+      const total = Number(count || 0n);
+      const raws = await Promise.all(
+        Array.from({ length: total }, (_, i) =>
+          pool.getInvestmentAsk(i).catch(() => null)
+        )
+      );
+      const normalized: AskItem[] = raws
+        .filter(Boolean)
+        .map((r: any, i: number) => ({
+          id: BigInt(r.id ?? r[0] ?? i),
+          business: r.business ?? r[1] ?? "",
+          amount: BigInt(r.amount ?? r[2] ?? 0n),
+          funded: BigInt(r.funded ?? r[3] ?? 0n),
+          status: Number(r.status ?? r[4] ?? 0),
+        }));
       setAsks(normalized);
     } catch (e: any) {
-      toast({ title: "Failed to load asks", description: e?.message || String(e) });
+      toast({
+        title: "Failed to load asks",
+        description: e?.message || String(e),
+      });
     } finally {
       setLoading(false);
     }
@@ -50,7 +61,9 @@ const Index = () => {
       const provider = getEthersProvider();
       if (!provider) throw new Error("Connect wallet first");
       const pool = await getWritePool(provider);
-      const tx = await pool.invest(selected?.id ?? 0, { value: parseEther(String(amountHBAR)) });
+      const tx = await pool.invest(selected?.id ?? 0, {
+        value: parseEther(String(amountHBAR)),
+      });
       toast({ title: "Transaction submitted", description: tx.hash });
       await tx.wait();
       toast({ title: "Funding successful" });
@@ -63,13 +76,18 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-[image:var(--gradient-subtle)]">
-      <Seo title="FundChain — Explore Projects" description="Browse investment asks and fund directly on Hedera." />
+      <Seo
+        title="FundChain — Explore Projects"
+        description="Browse investment asks and fund directly on Hedera."
+      />
       <Navbar />
       <main className="container mx-auto py-10">
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">Investment Asks</h1>
-            <p className="text-muted-foreground">Discover projects seeking micro-investments on Hedera.</p>
+            <p className="text-muted-foreground">
+              Discover projects seeking micro-investments on Hedera.
+            </p>
           </div>
           <Button asChild>
             <a href="/create">Create Project</a>
@@ -78,7 +96,9 @@ const Index = () => {
         {loading ? (
           <div className="text-muted-foreground">Loading…</div>
         ) : asks.length === 0 ? (
-          <div className="text-muted-foreground">No asks yet. Be the first to create one.</div>
+          <div className="text-muted-foreground">
+            No asks yet. Be the first to create one.
+          </div>
         ) : (
           <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {asks.map((ask) => (
@@ -87,7 +107,11 @@ const Index = () => {
           </div>
         )}
       </main>
-      <FundModal open={!!modalOpen} onOpenChange={setModalOpen} onConfirm={confirmFund} />
+      <FundModal
+        open={!!modalOpen}
+        onOpenChange={setModalOpen}
+        onConfirm={confirmFund}
+      />
     </div>
   );
 };
