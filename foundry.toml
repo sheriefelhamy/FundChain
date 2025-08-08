@@ -20,15 +20,16 @@ optimizer_runs = 200
 solc = "0.8.19"
 evm_version = "paris"
 via_ir = false
+chain_id = 296  # Hedera Testnet Chain ID
 
 # File system permissions
 [[profile.default.fs_permissions]]
 access = "read"
-path = "./"  # Enables reading files like `main-contract-address.txt`
+path = "./"
 
 [[profile.default.fs_permissions]]
 access = "write"
-path = "./"  # Enables writing deployment logs, addresses, etc.
+path = "./"
 
 [profile.broadcast]
 fs_permissions = [
@@ -38,16 +39,5 @@ fs_permissions = [
 
 # RPC Endpoints
 [rpc_endpoints]
-hedera_mainnet = "https://mainnet.hashio.io/api"
-hedera_testnet = "https://testnet.hashio.io/api"
+testnet = "${HEDERA_TESTNET_RPC}"
 
-# Etherscan Verification (Hedera-compatible)
-[etherscan.hedera_mainnet]
-chain = 295
-url = "https://hashscan.io/mainnet"
-key = "${HEDERA_API_KEY}"
-
-[etherscan.hedera_testnet]
-chain = 296
-url = "https://hashscan.io/testnet"
-key = "${HEDERA_API_KEY}"

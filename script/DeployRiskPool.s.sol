@@ -6,7 +6,7 @@ import "../src/RiskPool.sol";
 
 contract DeployRiskPoolScript is Script {
     function run() external returns (address) {
-        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+        uint256 deployerPrivateKey = vm.envUint("OPERATOR_KEY");
         address deployerAddress = vm.addr(deployerPrivateKey);
         
         console.log("=== DEPLOYING RISK POOL ===");

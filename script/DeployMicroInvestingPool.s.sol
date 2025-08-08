@@ -6,13 +6,11 @@ import "../src/MicroInvestingPool.sol";
 
 contract DeployMainContractScript is Script {
     function run() external returns (address) {
-        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+        uint256 deployerPrivateKey = vm.envUint("OPERATOR_KEY");
         address deployerAddress = vm.addr(deployerPrivateKey);
         address treasuryAddress = vm.envAddress("TREASURY_ADDRESS");
+        address riskPoolAddress = vm.envAddress("RISK_POOL_ADDRESS");
         
-        // Read Risk Pool address
-        string memory riskPoolAddressStr = vm.readFile("risk-pool-address.txt");
-        address riskPoolAddress = vm.parseAddress(riskPoolAddressStr);
         
         console.log("=== DEPLOYING MAIN CONTRACT ===");
         console.log("Deployer:", deployerAddress);

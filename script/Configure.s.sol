@@ -8,17 +8,12 @@ import "../src/Governance.sol";
 
 contract ConfigureScript is Script {
     function run() external {
-        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+        uint256 deployerPrivateKey = vm.envUint("OPERATOR_KEY");
         address deployerAddress = vm.addr(deployerPrivateKey);
         
-        // Read deployed addresses
-        string memory riskPoolAddressStr = vm.readFile("risk-pool-address.txt");
-        string memory mainContractAddressStr = vm.readFile("main-contract-address.txt");
-        string memory governanceAddressStr = vm.readFile("governance-address.txt");
-        
-        address riskPoolAddress = vm.parseAddress(riskPoolAddressStr);
-        address mainContractAddress = vm.parseAddress(mainContractAddressStr);
-        address governanceAddress = vm.parseAddress(governanceAddressStr);
+        address riskPoolAddress = vm.envAddress("RISK_POOL_ADDRESS"); 
+        address mainContractAddress = vm.envAddress("MAIN_CONTRACT_ADDRESS");
+        address governanceAddress = vm.envAddress("GOVERNANCE_CONTRACT_ADDRESS");
         
         console.log("=== CONFIGURING CONTRACTS ===");
         console.log("Risk Pool:", riskPoolAddress);

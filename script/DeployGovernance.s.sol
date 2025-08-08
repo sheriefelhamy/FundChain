@@ -6,12 +6,9 @@ import "../src/Governance.sol";
 
 contract DeployGovernanceScript is Script {
     function run() external returns (address) {
-        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
+        uint256 deployerPrivateKey = vm.envUint("OPERATOR_KEY");
         address deployerAddress = vm.addr(deployerPrivateKey);
-        
-        // Read Main Contract address
-        string memory mainContractAddressStr = vm.readFile("main-contract-address.txt");
-        address mainContractAddress = vm.parseAddress(mainContractAddressStr);
+        address mainContractAddress = vm.envAddress("MAIN_CONTRACT_ADDRESS");
         
         console.log("=== DEPLOYING GOVERNANCE ===");
         console.log("Deployer:", deployerAddress);
