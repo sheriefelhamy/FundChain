@@ -85,10 +85,11 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       setConnecting(true);
       const appMetadata = {
         name: "FundChain",
-        description: "FundChain Hedera dApp",
-        url: "https://fund-chain-rosy.vercel.app/",
-        icon: window.location.origin + "/favicon.ico",
+        description: "Micro-investing dApp on Hedera",
+        icon: "https://fundchain.vercel.app/icon-192.png",
+        url: "https://fundchain.vercel.app",
       };
+
       const initRes = await (hashconnect as any).init(
         appMetadata,
         network,
